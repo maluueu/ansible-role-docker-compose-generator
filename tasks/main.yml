@@ -46,3 +46,34 @@
     dest: "{{ docker_compose_generator_output_path }}/compose.yaml"
     owner: "{{ docker_compose_generator_uid }}"
     group: "{{ docker_compose_generator_gid }}"
+
+- name: Find all non-compose.yaml files
+  set_fact:
+    non_compose_files: >-
+      {{
+        query('filetree', services_directory +
+          (docker_compose_hostname | default(inventory_hostname))) |
+        selectattr('state', 'eq', 'file') |
+        rejectattr('path', 'regex', 'compose.ya?ml$') |
+        list
+      }}
+
+- name: Debug non-compose files (optional)
+  debug:
+    var: non_compose_files
+
+- name: Make sure destination dir exists for non-compose files
+  file:
+    path: "{{ appdata_path }}/{{ item.path | dirname }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+    state: directory
+  loop: "{{ non_compose_files }}"
+
+- name: Copy non-compose files to destination
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ appdata_path }}/{{ item.path }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+  loop: "{{ non_compose_files }}"
