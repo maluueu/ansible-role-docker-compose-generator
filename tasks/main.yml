@@ -20,7 +20,7 @@
         query('filetree', services_directory +
           (docker_compose_hostname | default(inventory_hostname))) |
         selectattr('state', 'eq', 'file') |
-        selectattr('path', 'regex', '.ya?ml$') |
+        selectattr('path', 'regex', 'compose.ya?ml$') |
         list
       }}
 
