@@ -2,6 +2,8 @@
 - name: ensure destination for compose file exists
   file:
     path: "{{ docker_compose_generator_output_path }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
     state: directory
 
 - name: Find all compose files
