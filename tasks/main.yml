@@ -77,3 +77,21 @@
     owner: "{{ docker_compose_generator_uid }}"
     group: "{{ docker_compose_generator_gid }}"
   loop: "{{ non_compose_files }}"
+
+- name: Make sure destination dir exists for encrypted service files
+  file:
+    path: "{{ appdata_path }}/{{ item.path | dirname }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+    state: directory
+  loop: "{{ SERVICES_ENCRYPTED_FILES }}"
+  when: item.service_host eq inventory_hostname
+
+- name: Copy encrypted service files to destination
+  ansible.builtin.copy:
+    dest: "{{ appdata_path }}/{{ item.path }}"
+    content: "{{ item.content }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+  loop: "{{ SERVICES_ENCRYPTED_FILES }}"
+  when: item.service_host eq inventory_hostname
