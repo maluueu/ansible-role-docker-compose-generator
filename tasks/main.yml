@@ -85,7 +85,7 @@
     group: "{{ docker_compose_generator_gid }}"
     state: directory
   loop: "{{ SERVICES_ENCRYPTED_FILES }}"
-  when: item.service_host eq inventory_hostname
+  when: item.service_host == inventory_hostname
 
 - name: Copy encrypted service files to destination
   ansible.builtin.copy:
@@ -94,4 +94,4 @@
     owner: "{{ docker_compose_generator_uid }}"
     group: "{{ docker_compose_generator_gid }}"
   loop: "{{ SERVICES_ENCRYPTED_FILES }}"
-  when: item.service_host eq inventory_hostname
+  when: item.service_host == inventory_hostname
