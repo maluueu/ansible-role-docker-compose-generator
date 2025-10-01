@@ -78,6 +78,14 @@
     group: "{{ docker_compose_generator_gid }}"
   loop: "{{ non_compose_files }}"
 
+- name: Make sure specified directories exist with correct owner
+  file:
+    path: "{{ appdata_path }}/{{ item.path }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+    state: directory
+  loop: "{{ SERVICES_CREATE_DIRS_WITH_OWNER }}"
+
 - name: Make sure destination dir exists for encrypted service files
   file:
     path: "{{ appdata_path }}/{{ item.path | dirname }}"
