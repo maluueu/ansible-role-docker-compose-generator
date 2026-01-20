@@ -39,6 +39,12 @@
          | regex_replace('^', '  ') }}
       {% endif %}
       {% endfor %}
+      {% if FEATURE_DOCKER_IPV6 | default(false) %}
+
+      networks:
+        default:
+          enable_ipv6: true
+      {% endif %}
 
 - name: Write combined compose file
   copy:
