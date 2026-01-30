@@ -82,6 +82,7 @@
     dest: "{{ appdata_path }}/{{ item.path }}"
     owner: "{{ docker_compose_generator_uid }}"
     group: "{{ docker_compose_generator_gid }}"
+    mode: preserve
   loop: "{{ non_compose_files }}"
 
 - name: Make sure specified directories exist with correct owner
