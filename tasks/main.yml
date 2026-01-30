@@ -68,6 +68,14 @@
   ansible.builtin.debug:
     var: non_compose_files
 
+- name: Make sure specified directories exist with correct owner
+  ansible.builtin.file:
+    path: "{{ appdata_path }}/{{ item.path }}"
+    owner: "{{ docker_compose_generator_uid }}"
+    group: "{{ docker_compose_generator_gid }}"
+    state: directory
+  loop: "{{ SERVICES_CREATE_DIRS_WITH_OWNER }}"
+
 - name: Make sure destination dir exists for non-compose files
   ansible.builtin.file:
     path: "{{ appdata_path }}/{{ item.path | dirname }}"
@@ -84,14 +92,6 @@
     group: "{{ docker_compose_generator_gid }}"
     mode: preserve
   loop: "{{ non_compose_files }}"
-
-- name: Make sure specified directories exist with correct owner
-  ansible.builtin.file:
-    path: "{{ appdata_path }}/{{ item.path }}"
-    owner: "{{ docker_compose_generator_uid }}"
-    group: "{{ docker_compose_generator_gid }}"
-    state: directory
-  loop: "{{ SERVICES_CREATE_DIRS_WITH_OWNER }}"
 
 - name: Make sure destination dir exists for encrypted service files
   ansible.builtin.file:
